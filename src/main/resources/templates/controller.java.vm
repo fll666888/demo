@@ -1,0 +1,83 @@
+package com.example.demo.controller;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.demo.entity.${cfg.className};
+import com.example.demo.service.${cfg.className}Service;
+import com.example.demo.vo.R;
+import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * ${cfg.comments}
+ *
+ * @author ${cfg.author}
+ * @since ${cfg.datetime}
+ */
+@RestController
+@RequestMapping("/${cfg.pathName}")
+@Api(value = "${cfg.pathName}", tags = "${cfg.comments}管理")
+public class ${cfg.className}Controller {
+
+    @Autowired
+    private ${cfg.className}Service ${cfg.classname}Service;
+
+    /**
+     * 分页查询
+     * @param page 分页对象
+     * @param ${cfg.classname} ${cfg.comments}
+     * @return
+     */
+    @ApiOperation(value = "分页查询", notes = "分页查询")
+    @GetMapping("/page")
+    public R get${cfg.className}Page(Page page, ${cfg.className} ${cfg.classname}) {
+        return R.ok(${cfg.classname}Service.page(page, Wrappers.query(${cfg.classname})));
+    }
+
+    /**
+     * 通过id查询${cfg.comments}
+     * @param id
+     * @return R
+     */
+    @ApiOperation(value = "通过id查询", notes = "通过id查询")
+    @GetMapping("/{id}")
+    public R getById(@PathVariable("id") ${cfg.primaryKeyType} id){
+        return R.ok(${cfg.classname}Service.getById(id));
+    }
+
+    /**
+     * 新增${cfg.comments}
+     * @param ${cfg.classname} ${cfg.comments}
+     * @return R
+     */
+    @ApiOperation(value = "新增${cfg.comments}", notes = "新增${cfg.comments}")
+    @PostMapping
+    public R save(@RequestBody ${cfg.className} ${cfg.classname}){
+        return R.ok(${cfg.classname}Service.save(${cfg.classname}));
+    }
+
+    /**
+     * 修改${cfg.comments}
+     * @param ${cfg.classname} ${cfg.comments}
+     * @return R
+     */
+    @ApiOperation(value = "修改${cfg.comments}", notes = "修改${cfg.comments}")
+    @PutMapping
+    public R updateById(@RequestBody ${cfg.className} ${cfg.classname}){
+        return R.ok(${cfg.classname}Service.updateById(${cfg.classname}));
+    }
+
+    /**
+     * 通过id删除${cfg.comments}
+     * @param id
+     * @return R
+     */
+    @ApiOperation(value = "通过id删除${cfg.comments}", notes = "通过id删除${cfg.comments}")
+    @DeleteMapping("/{id}")
+    public R removeById(@PathVariable ${cfg.primaryKeyType} id){
+        return R.ok(${cfg.classname}Service.removeById(id));
+    }
+
+}

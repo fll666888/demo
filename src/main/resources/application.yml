@@ -1,0 +1,142 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    min-spare-threads: 30
+  port: 18080
+  servlet:
+    context-path: /demo
+
+spring:
+  application:
+    name: springboottest
+#  jackson: # 将对象序列化为JSON，也可以把JSON转换为对象。
+#    serialization:
+#      FAIL_ON_EMPTY_BEANS: false # 忽略无法转换的对象
+  #  main:
+#    allow-bean-definition-overriding: true # 允许重写bean定义
+  # 配置文件上传大小限制
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+#  security:
+#    basic:
+#      enabled: true
+#    user:
+#     name: root
+#     password: root
+  redis:
+    database: 0  # Redis数据库索引（默认为0）
+    host: 127.0.0.1 # Redis服务器地址
+    port: 6389  # Redis服务器连接端口
+    password: 123456  # Redis服务器连接密码（默认为空）
+    timeout: 3000  # 连接超时，单位ms
+#    sentinel: #哨兵模式
+#      master: mymaster
+#      nodes: 127.0.0.1:26380,127.0.0.1:26381,127.0.0.1:26382 # 哨兵的IP:Port列表
+#    cluster: #集群模式
+#      nodes: 127.0.0.1:6380,127.0.0.1:6381,127.0.0.1:6382,127.0.0.1:6383,127.0.0.1:6384,127.0.0.1:6385 # 集群的IP:Port列表
+#      max-redirects: 3  # 重定向的最大次数
+    lettuce:
+      pool:
+        max-active: 8  # 连接池最大连接数（使用负值表示没有限制） 默认 8
+        max-wait: -1   # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        max-idle: 8    # 连接池中的最大空闲连接 默认 8
+        min-idle: 0    # 连接池中的最小空闲连接 默认 0
+  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/demo?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+#    username: root
+#    password: 123456
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/demo?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+      username: root
+      password: 123456
+      filters: stat,wall,slf4j,config # 配置监控统计拦截的filters，去掉后监控界面SQL无法进行统计，’wall’用于防火墙
+      max-active: 100 # 最大连接数
+      initial-size: 1 # 初始化大小
+      max-wait: 60000 # 获取连接等待超时时间（毫秒）
+      min-idle: 1 # 最小连接数
+      time-between-eviction-runs-millis: 60000 # 间隔多久才进行一次检测，检测需要关闭的空闲连接（毫秒）
+      min-evictable-idle-time-millis: 300000 # 一个连接在池中最小生存的时间（毫秒）
+      validation-query: select 'x' # 用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，testWhileIdle、testOnBorrow、testOnReturn都不会起作用。
+      test-while-idle: true # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-on-borrow: false # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return: false # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      pool-prepared-statements: true # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。官方建议mysql下关闭。个人建议如果想用SQL防火墙 建议打开
+      max-open-prepared-statements: 50 # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+      max-pool-prepared-statement-per-connection-size: 20 # 每个连接最多缓存多少个SQL
+
+# mybatis-plus相关配置
+mybatis-plus:
+  type-aliases-package: com.example.demo.mapper
+  # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
+    map-underscore-to-camel-case: true
+    # 如果查询结果中包含空值的列，MyBatis 在映射的时候，是否会映射这个字段
+    call-setters-on-nulls: true
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#Mybatis输出sql日志
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com:
+      example:
+        demo:
+          mapper: debug
+
+#引入swagger
+swagger:
+  enable: true
+
+# minio 连接参数 windows下启动命令：minio.exe server E:\minio\minioStorage 访问地址 http://127.0.0.1:9000/minio/login
+minio:
+  endpoint: 127.0.0.1
+  port: 9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: image
+
+# RocketMQ相关配置
+rocketmq:
+  # 生产者配置
+  producer:
+    # 该应用是否启用生产者 on：启用 off：关闭
+    isOnOff: on
+    # 发送同一类消息的设置为同一个group，保证唯一
+    groupName: unique_producer_group_name
+    # 服务地址
+    namesrvAddr: 127.0.0.1:9876
+    # 消息最大长度 默认1024*4(4M)
+    maxMessageSize: 4096
+    # 发送消息超时时间,默认3000ms
+    sendMsgTimeout: 3000
+    # 发送消息失败重试次数，默认2
+    retryTimesWhenSendFailed: 2
+  # 消费者配置
+  consumer:
+    # 该应用是否启用消费者 on：启用 off：关闭
+    isOnOff: on
+    # 官方建议：确保同一组中的每个消费者订阅相同的主题。
+    groupName: unique_consumer_group_name
+    # 服务地址
+    namesrvAddr: 127.0.0.1:9876
+    # 接收该 Topic 下所有 Tag
+    topics: testTopic~*;
+    consumeThreadMin: 20
+    consumeThreadMax: 64
+    # 设置一次消费消息的条数，默认为1条
+    consumeMessageBatchMaxSize: 1
+
+# 配置 Topic Tag
+plat:
+  plat-topic: testTopic
+  plat-tag: testTag
